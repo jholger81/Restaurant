@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Source\\Restaurant\\Restaurant\\Restaurant.csproj": {}
+    "C:\\Source\\RestaurantGithub\\Restaurant.csproj": {}
   },
   "projects": {
-    "C:\\Source\\Restaurant\\Restaurant\\Restaurant.csproj": {
+    "C:\\Source\\RestaurantGithub\\Restaurant.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Source\\Restaurant\\Restaurant\\Restaurant.csproj",
+        "projectUniqueName": "C:\\Source\\RestaurantGithub\\Restaurant.csproj",
         "projectName": "Restaurant",
-        "projectPath": "C:\\Source\\Restaurant\\Restaurant\\Restaurant.csproj",
+        "projectPath": "C:\\Source\\RestaurantGithub\\Restaurant.csproj",
         "packagesPath": "C:\\Users\\holger\\.nuget\\packages\\",
-        "outputPath": "C:\\Source\\Restaurant\\Restaurant\\obj\\",
+        "outputPath": "C:\\Source\\RestaurantGithub\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\DevExpress 21.2\\Components\\Offline Packages",
