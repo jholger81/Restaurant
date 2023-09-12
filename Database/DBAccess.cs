@@ -28,12 +28,14 @@ namespace Restaurant.Database
 
         public static Kellner GetKellner()
         {
+            // TODO
             return new Kellner();
         }
 
         public static Tisch GetTisch()
         {
             // TODO
+            return new Tisch();
         }
 
         public static Bestellpositionen GetBestellpositionen()
