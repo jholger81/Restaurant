@@ -33,7 +33,6 @@ namespace Restaurant
 
             app.MapControllers();
            
-            //service.StartHeartbeat(new Creativity.Monitoring.Heartbeat.Heartbeat("https://notify.alertops.com/Heartbeat/heartbeaturl"));
             builder.Services.AddWindowsService();
 
             //Basic Authentication
@@ -43,6 +42,7 @@ namespace Restaurant
                 throw new Exception("No port configured");
             else
                 app.Run($"https://localhost:{settings.Port.Value.ToString()}");
+                //app.Run($"https://192.168.1.81:{settings.Port.Value.ToString()}");
         }
     }
 }
