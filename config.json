@@ -1,0 +1,4 @@
+{
+	"Port": 1337,
+	"DBFile": "dbfilename.sddb"
+}
