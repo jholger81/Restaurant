@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Database;
 using Restaurant.Models;
 
 namespace Restaurant.Controllers
@@ -14,25 +15,29 @@ namespace Restaurant.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetOrder")]
-        public string GetOrder(int OrderNumber)
+        [HttpGet("{id_Tisch}", Name = "GetOrder")]
+        public Bestellung GetOrder(int? id_Tisch)
         {
-            //TODO
-            Bestellung myOrder = new Bestellung();
-            myOrder.ID_Bestellung = 123;
-
-            //return myOrder;
-            return "123";
+            Bestellung bestellung;
+            try
+            {
+                bestellung = DBAccess.GetOrder(id_Tisch.Value);
+            }
+            catch (Exception ex)
+            {
+                bestellung = new Bestellung();
+            }
+            
+            return bestellung;
         }
 
         [HttpPost(Name = "PostNewOrder")]
         public void PostNewOrder(Bestellung newOrder)
         {
             newOrder = new Bestellung();
-            newOrder.OrderDate = DateTime.Now;
-            newOrder.TableNumber = 1;
-            newOrder.OrderList = new List<Artikel>(); // TODO
-
+            newOrder.Datum = DateTime.Now;
+            newOrder.ID_Tisch = 1;
+            newOrder.Positionen = new List<Bestellposition>(); // TODO
         }
     }
 }
