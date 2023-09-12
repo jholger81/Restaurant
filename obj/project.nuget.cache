@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NidxRgGI5M8M+L5KZOq7AphAVM4+FHaFVPGhYcZBmtuWl7RlzZRKRvRPu75L4VzL3UpAZsyiRYFWtftI4iiV4A==",
+  "dgSpecHash": "6FG6tQ6TnuCfaxTTBGSrxycFWy6VFnn0fADLKgWvCkjPUVeQIyNyupfWxG993iuDUgJo4OZz7elSL+a/GcTvdQ==",
   "success": true,
-  "projectFilePath": "C:\\Source\\Restaurant\\Restaurant\\Restaurant.csproj",
+  "projectFilePath": "C:\\Source\\RestaurantGithub\\Restaurant.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\holger\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\holger\\.nuget\\packages\\microsoft.extensions.configuration\\8.0.0-preview.7.23375.6\\microsoft.extensions.configuration.8.0.0-preview.7.23375.6.nupkg.sha512",

@@ -18,11 +18,21 @@ namespace Restaurant.Controllers
         public string GetOrder(int OrderNumber)
         {
             //TODO
-            Order myOrder = new Order();
-            myOrder.OrderNumber = 123;
+            Bestellung myOrder = new Bestellung();
+            myOrder.ID_Bestellung = 123;
 
             //return myOrder;
             return "123";
+        }
+
+        [HttpPost(Name = "PostNewOrder")]
+        public void PostNewOrder(Bestellung newOrder)
+        {
+            newOrder = new Bestellung();
+            newOrder.OrderDate = DateTime.Now;
+            newOrder.TableNumber = 1;
+            newOrder.OrderList = new List<Artikel>(); // TODO
+
         }
     }
 }
