@@ -1,4 +1,6 @@
 ﻿using Restaurant.Models;
+using System.Collections.Generic;
+using System;
 using System.Data.SQLite;
 
 namespace Restaurant.Database
