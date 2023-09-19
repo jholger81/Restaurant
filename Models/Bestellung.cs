@@ -1,4 +1,7 @@
-﻿namespace Restaurant.Models
+﻿using System.Collections.Generic;
+using System;
+
+namespace Restaurant.Models
 {
     public class Bestellung
     {

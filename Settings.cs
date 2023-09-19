@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.IO;
+using System.Text.Json;
 
 namespace Restaurant
 {
@@ -16,7 +18,7 @@ namespace Restaurant
                 throw new Exception($"config not found at {System.IO.Directory.GetCurrentDirectory()}");
 
             string json = File.ReadAllText("config.json");
-            settings = JsonSerializer.Deserialize<Settings>(json)!;
+            settings = JsonSerializer.Deserialize<Settings>(json);
 
             return settings;
         }
