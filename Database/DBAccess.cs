@@ -107,5 +107,28 @@ namespace Restaurant.Database
 
             return positionen;
         }
+
+        internal static List<Tisch> GetTablesForWaiter(int id_Kellner)
+        {
+            List<Tisch> tischliste = new List<Tisch> ();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Tisch, FROM Tisch WHERE ID_Kellner = {id_Kellner}";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                Tisch tisch = new Tisch();
+                tisch.ID_Tisch = sqlitereader.GetInt32(0);
+                tisch.ID_Kellner = id_Kellner;
+                tischliste.Add(tisch);
+            }
+            sqliteconnection.Close();
+
+            return tischliste;
+        }
     }
 }
