@@ -40,7 +40,19 @@ namespace Restaurant.Controllers
             newOrder = new Bestellung();
             newOrder.Datum = DateTime.Now;
             newOrder.ID_Tisch = 1;
-            newOrder.Positionen = new List<Bestellposition>(); // TODO
+            newOrder.Positionen = new List<Bestellposition>();
+
+            Bestellposition newPos = new Bestellposition();
+            newPos.Geliefert = 0;
+            newPos.ID_Artikel = 1;
+            newPos.Extras = "keine Tomaten plx";
+            newOrder.Positionen.Add(newPos);
+
+            Bestellposition newPos2 = new Bestellposition();
+            newPos.Geliefert = 0;
+            newPos.ID_Artikel = 2;
+            newPos.Extras = "";
+            newOrder.Positionen.Add(newPos);
         }
     }
 }
