@@ -411,6 +411,7 @@
             this.button1.TabIndex = 25;
             this.button1.Text = "Abrechnen";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.btnpay_Click);
             // 
             // button2
             // 
@@ -421,7 +422,7 @@
             this.button2.TabIndex = 26;
             this.button2.Text = "Artikel hinzufügen";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.btnadd_Click);
             // 
             // pictureBox1
             // 

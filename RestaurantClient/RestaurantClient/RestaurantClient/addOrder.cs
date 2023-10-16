@@ -20,5 +20,10 @@ namespace RestaurantClient
             this.MinimizeBox = false;
             nudcount.Controls[0].Hide();
         }
+
+        private void btnback_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
