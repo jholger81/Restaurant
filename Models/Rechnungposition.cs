@@ -5,6 +5,14 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Models
 {
+    /// <summary>
+    /// Modell für Rechnungspositionen
+    /// <para>Attribute:</para>
+    /// <para>int ID_Rechnungsposition</para>
+    /// <para>int ID_Artikel</para>
+    /// <para>int ID_Rechnung</para>
+    /// <para>Artikel Artikel</para>
+    /// </summary>
     public class Rechnungposition
     {
         public int ID_Rechnungposition { get; set; }
