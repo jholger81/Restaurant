@@ -19,5 +19,10 @@ namespace RestaurantClient
             this.MaximizeBox = false;
             this.MinimizeBox = false;
         }
+
+        private void btnback_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

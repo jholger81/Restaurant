@@ -9,3 +9,4 @@ H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\bin\Debug\RestaurantC
 H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.exe
 H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.pdb
 H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.addOrder.resources
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.payMenu.resources

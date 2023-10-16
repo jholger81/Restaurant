@@ -58,6 +58,12 @@
     <Compile Include="index.Designer.cs">
       <DependentUpon>index.cs</DependentUpon>
     </Compile>
+    <Compile Include="payMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="payMenu.Designer.cs">
+      <DependentUpon>payMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="addOrder.resx">
@@ -65,6 +71,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="index.resx">
       <DependentUpon>index.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="payMenu.resx">
+      <DependentUpon>payMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

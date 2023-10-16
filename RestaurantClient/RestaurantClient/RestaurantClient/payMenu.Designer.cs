@@ -40,6 +40,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.rtbTips = new System.Windows.Forms.RichTextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.btnpay = new System.Windows.Forms.Button();
+            this.btnback = new System.Windows.Forms.Button();
+            this.lbltable = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // clbnotpayed
@@ -113,6 +116,7 @@
             this.rtbmoneygive.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbmoneygive.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbmoneygive.Location = new System.Drawing.Point(201, 447);
+            this.rtbmoneygive.MaxLength = 8;
             this.rtbmoneygive.Name = "rtbmoneygive";
             this.rtbmoneygive.Size = new System.Drawing.Size(150, 39);
             this.rtbmoneygive.TabIndex = 9;
@@ -148,11 +152,44 @@
             this.label5.TabIndex = 10;
             this.label5.Text = "Trinkgeld:";
             // 
+            // btnpay
+            // 
+            this.btnpay.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.btnpay.Location = new System.Drawing.Point(392, 430);
+            this.btnpay.Name = "btnpay";
+            this.btnpay.Size = new System.Drawing.Size(185, 114);
+            this.btnpay.TabIndex = 12;
+            this.btnpay.Text = "Begleichen";
+            this.btnpay.UseVisualStyleBackColor = false;
+            // 
+            // btnback
+            // 
+            this.btnback.BackColor = System.Drawing.Color.IndianRed;
+            this.btnback.Location = new System.Drawing.Point(12, 12);
+            this.btnback.Name = "btnback";
+            this.btnback.Size = new System.Drawing.Size(153, 61);
+            this.btnback.TabIndex = 13;
+            this.btnback.Text = "Abbrechen";
+            this.btnback.UseVisualStyleBackColor = false;
+            this.btnback.Click += new System.EventHandler(this.btnback_Click);
+            // 
+            // lbltable
+            // 
+            this.lbltable.AutoSize = true;
+            this.lbltable.Location = new System.Drawing.Point(223, 22);
+            this.lbltable.Name = "lbltable";
+            this.lbltable.Size = new System.Drawing.Size(118, 13);
+            this.lbltable.TabIndex = 14;
+            this.lbltable.Text = "Ausgewählter Tisch: 00";
+            // 
             // payMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(609, 556);
+            this.Controls.Add(this.lbltable);
+            this.Controls.Add(this.btnback);
+            this.Controls.Add(this.btnpay);
             this.Controls.Add(this.rtbTips);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.rtbmoneygive);
@@ -185,5 +222,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.RichTextBox rtbTips;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnpay;
+        private System.Windows.Forms.Button btnback;
+        private System.Windows.Forms.Label lbltable;
     }
 }

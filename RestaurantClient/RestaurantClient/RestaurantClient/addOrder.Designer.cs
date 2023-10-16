@@ -40,6 +40,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.nudcount = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnback = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudcount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -47,32 +48,32 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 69);
+            this.listBox1.Location = new System.Drawing.Point(11, 143);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(586, 225);
             this.listBox1.TabIndex = 0;
             // 
             // btngetraenke
             // 
-            this.btngetraenke.Location = new System.Drawing.Point(12, 11);
+            this.btngetraenke.Location = new System.Drawing.Point(11, 85);
             this.btngetraenke.Name = "btngetraenke";
-            this.btngetraenke.Size = new System.Drawing.Size(264, 54);
+            this.btngetraenke.Size = new System.Drawing.Size(237, 54);
             this.btngetraenke.TabIndex = 1;
             this.btngetraenke.Text = "Getränke";
             this.btngetraenke.UseVisualStyleBackColor = true;
             // 
             // btnEssen
             // 
-            this.btnEssen.Location = new System.Drawing.Point(334, 11);
+            this.btnEssen.Location = new System.Drawing.Point(254, 85);
             this.btnEssen.Name = "btnEssen";
-            this.btnEssen.Size = new System.Drawing.Size(264, 54);
+            this.btnEssen.Size = new System.Drawing.Size(238, 54);
             this.btnEssen.TabIndex = 2;
             this.btnEssen.Text = "Essen";
             this.btnEssen.UseVisualStyleBackColor = true;
             // 
             // rtbextras
             // 
-            this.rtbextras.Location = new System.Drawing.Point(12, 328);
+            this.rtbextras.Location = new System.Drawing.Point(11, 387);
             this.rtbextras.Name = "rtbextras";
             this.rtbextras.Size = new System.Drawing.Size(375, 110);
             this.rtbextras.TabIndex = 4;
@@ -81,7 +82,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 312);
+            this.label1.Location = new System.Drawing.Point(11, 371);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 13);
             this.label1.TabIndex = 5;
@@ -90,7 +91,7 @@
             // btnreset
             // 
             this.btnreset.BackColor = System.Drawing.Color.IndianRed;
-            this.btnreset.Location = new System.Drawing.Point(12, 454);
+            this.btnreset.Location = new System.Drawing.Point(11, 513);
             this.btnreset.Name = "btnreset";
             this.btnreset.Size = new System.Drawing.Size(175, 90);
             this.btnreset.TabIndex = 6;
@@ -100,7 +101,7 @@
             // btnsaveclose
             // 
             this.btnsaveclose.BackColor = System.Drawing.Color.Khaki;
-            this.btnsaveclose.Location = new System.Drawing.Point(217, 454);
+            this.btnsaveclose.Location = new System.Drawing.Point(216, 513);
             this.btnsaveclose.Name = "btnsaveclose";
             this.btnsaveclose.Size = new System.Drawing.Size(175, 90);
             this.btnsaveclose.TabIndex = 7;
@@ -110,7 +111,7 @@
             // btnsavenext
             // 
             this.btnsavenext.BackColor = System.Drawing.Color.DarkSeaGreen;
-            this.btnsavenext.Location = new System.Drawing.Point(422, 454);
+            this.btnsavenext.Location = new System.Drawing.Point(421, 513);
             this.btnsavenext.Name = "btnsavenext";
             this.btnsavenext.Size = new System.Drawing.Size(175, 90);
             this.btnsavenext.TabIndex = 8;
@@ -120,7 +121,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(422, 312);
+            this.label2.Location = new System.Drawing.Point(421, 371);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 13);
             this.label2.TabIndex = 9;
@@ -128,7 +129,7 @@
             // 
             // nudcount
             // 
-            this.nudcount.Location = new System.Drawing.Point(425, 328);
+            this.nudcount.Location = new System.Drawing.Point(424, 387);
             this.nudcount.Name = "nudcount";
             this.nudcount.Size = new System.Drawing.Size(143, 20);
             this.nudcount.TabIndex = 10;
@@ -136,18 +137,30 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::RestaurantClient.Properties.Resources.Gasthoficon;
-            this.pictureBox1.Location = new System.Drawing.Point(282, 15);
+            this.pictureBox1.Location = new System.Drawing.Point(499, 18);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(46, 48);
+            this.pictureBox1.Size = new System.Drawing.Size(98, 119);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 11;
             this.pictureBox1.TabStop = false;
+            // 
+            // btnback
+            // 
+            this.btnback.BackColor = System.Drawing.Color.IndianRed;
+            this.btnback.Location = new System.Drawing.Point(11, 12);
+            this.btnback.Name = "btnback";
+            this.btnback.Size = new System.Drawing.Size(237, 61);
+            this.btnback.TabIndex = 14;
+            this.btnback.Text = "Abbrechen";
+            this.btnback.UseVisualStyleBackColor = false;
+            this.btnback.Click += new System.EventHandler(this.btnback_Click);
             // 
             // addOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(609, 556);
+            this.ClientSize = new System.Drawing.Size(609, 620);
+            this.Controls.Add(this.btnback);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.nudcount);
             this.Controls.Add(this.label2);
@@ -182,5 +195,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudcount;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btnback;
     }
 }

@@ -20,12 +20,22 @@ namespace RestaurantClient
             this.MinimizeBox = false;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+    
+
+        private void btnadd_Click(object sender, EventArgs e)
         {
             Form addOrder = new addOrder();
 
             // Show the settings form
             addOrder.Show();
+        }
+
+        private void btnpay_Click(object sender, EventArgs e)
+        {
+            Form payMenu = new payMenu();
+
+            // Show the settings form
+            payMenu.Show();
         }
     }
 }
