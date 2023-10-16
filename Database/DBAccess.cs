@@ -36,9 +36,24 @@ namespace Restaurant.Database
             return bestellung;
         }
 
-        public static void InsertOrder()
+        public static void InsertOrder(Bestellung neueBestellung)
         {
-            // TODO
+            string sqlInsertOrderPos;
+            string strTemp = "Data Source=Database.db3";
+            string sqlInsertOrder = $"INSERT INTO Bestellung(Datum, ID_Tisch) VALUES({neueBestellung.Datum},{neueBestellung.ID_Tisch})"; // TODO VALUES
+            
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertOrder, sqliteconnection);
+            var idBestellung = sqlitecommand.ExecuteScalar();
+            neueBestellung.ID_Bestellung = (int)idBestellung;
+
+            foreach (Bestellposition position in neueBestellung.Positionen)
+            {
+                sqlInsertOrderPos = $"INSERT INTO Bestellposition(ID_Artikel, ID_Bestellung, Extras, Geliefert) VALUES({position.ID_Artikel}, {position.ID_Bestellung}, {position.Extras}, {position.Geliefert})";
+                sqlitecommand.CommandText = "";
+                position.ID_Bestellposition = (int)sqlitecommand.ExecuteScalar();
+            }
         }
 
         public static void UpdateOrder()

@@ -1,0 +1,12 @@
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.csproj.AssemblyReference.cache
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.index.resources
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.Properties.Resources.resources
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.csproj.GenerateResource.cache
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.csproj.CoreCompileInputs.cache
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\bin\Debug\RestaurantClient.exe.config
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\bin\Debug\RestaurantClient.exe
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\bin\Debug\RestaurantClient.pdb
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.exe
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.pdb
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.addOrder.resources
+H:\LF10\RestaurantClient\RestaurantClient\RestaurantClient\obj\Debug\RestaurantClient.payMenu.resources
