@@ -36,11 +36,59 @@ namespace Restaurant.Database
             return bestellung;
         }
 
-        public static void InsertOrder()
+        public static void InsertOrder(Bestellung neueBestellung)
         {
-            // TODO
+            string sqlInsertOrderPos;
+            int idBestellung;
+            int idBestellPos;
+            string strTemp = "Data Source=Database.db3";
+            string bestellzeitpunkt = neueBestellung.Datum.ToString("yyyy-MM-dd hh:mm:ss");
+            string sqlInsertOrder = $"INSERT INTO Bestellung(Datum, ID_Tisch) VALUES('{bestellzeitpunkt}',{neueBestellung.ID_Tisch})";
+
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertOrder, sqliteconnection);
+            var idBestellungObj = sqlitecommand.ExecuteScalar();
+            if (idBestellungObj == null)
+            {
+                string sqlGetOrderId = $"SELECT ID_Bestellung FROM Bestellung WHERE Datum = '{bestellzeitpunkt}' AND ID_Tisch = {neueBestellung.ID_Tisch}";
+                sqlitecommand.CommandText = sqlGetOrderId;
+                SQLiteDataReader orderIdReader = sqlitecommand.ExecuteReader();
+                orderIdReader.Read();
+                idBestellung = Convert.ToInt32(orderIdReader[0]);
+                orderIdReader.Close();
+            }
+            else
+            {
+                idBestellung = Convert.ToInt32(idBestellungObj);
+            }
+            neueBestellung.ID_Bestellung = (int)idBestellung;
+
+            foreach (Bestellposition position in neueBestellung.Positionen)
+            {
+                sqlInsertOrderPos = $"INSERT INTO Bestellposition(ID_Artikel, ID_Bestellung, Extras, Geliefert) VALUES({position.ID_Artikel}, {idBestellung}, '{position.Extras}', {position.Geliefert})";
+                //position.ID_Bestellposition = (int)sqlitecommand.ExecuteScalar();
+                sqlitecommand.CommandText = sqlInsertOrderPos;
+                var BestellPosIDObj = sqlitecommand.ExecuteScalar();
+                if (BestellPosIDObj == null)
+                {
+                    //string sqlGetOrderPosId = $"SELECT B.ID_Bestellung FROM Bestellposition AS BP JOIN Bestellung AS B ON BP.ID_Bestellung = B.ID_Bestellung WHERE B.Datum = '{bestellzeitpunkt}' AND B.ID_Tisch = {neueBestellung.ID_Tisch} ORDER BY BP.ID_Bestellposition DESC";
+                    string sqlGetOrderPosId = $"SELECT ID_Bestellposition FROM Bestellposition WHERE ID_Bestellung = {idBestellung} ORDER BY ID_Bestellposition DESC;";
+                    sqlitecommand.CommandText = sqlGetOrderPosId;
+                    SQLiteDataReader orderPosIdReader = sqlitecommand.ExecuteReader();
+                    orderPosIdReader.Read();
+                    idBestellPos = Convert.ToInt32(orderPosIdReader[0]);
+                    orderPosIdReader.Close();
+                }
+                else
+                {
+                    idBestellPos = Convert.ToInt32(idBestellungObj);
+                }
+                position.ID_Bestellposition = idBestellPos;
+            }
         }
 
+           
         public static void UpdateOrder()
         {
             // TODO
