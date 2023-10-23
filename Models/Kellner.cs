@@ -9,8 +9,8 @@
     /// </summary>
     public class Kellner
     {
-        int ID_Kellner { get; set; }
-        string Vorname { get; set; }
-        string Nachname { get; set; }
+        public int ID_Kellner { get; set; }
+        public string Vorname { get; set; }
+        public string Nachname { get; set; }
     }
 }
