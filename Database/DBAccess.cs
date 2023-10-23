@@ -173,6 +173,26 @@ namespace Restaurant.Database
             return tisch;
         }
 
+        public static List<Tisch> GetAlleTische()
+        {
+            List<Tisch> tische = new List<Tisch>();
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Tisch FROM Tisch";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                var tisch = new Tisch();
+                tisch = GetTisch(sqlitereader.GetInt32(0));
+                tische.Add(tisch);
+            }
+            sqliteconnection.Close();
+            return tische;
+        }
+
         public static List<Tisch> GetTischeForKellner(int id_Kellner)
         {
             List<Tisch> tische = new List<Tisch>();
