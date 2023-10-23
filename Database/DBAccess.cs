@@ -36,14 +36,55 @@ namespace Restaurant.Database
             return bestellung;
         }
 
-        public static void InsertOrder()
+        public static void InsertOrder(Bestellung neueBestellung)
         {
-            // TODO
+            string sqlInsertOrderPos;
+            int idBestellung;
+            int idBestellPos;
+            string strTemp = "Data Source=Database.db3";
+            string bestellzeitpunkt = neueBestellung.Datum.ToString("yyyy-MM-dd hh:mm:ss");
+            string sqlInsertOrder = $"INSERT INTO Bestellung(Datum, ID_Tisch) VALUES('{bestellzeitpunkt}',{neueBestellung.ID_Tisch}) RETURNING ID_Bestellung";
+
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertOrder, sqliteconnection);
+            var idBestellungObj = sqlitecommand.ExecuteScalar();
+            idBestellung = Convert.ToInt32(idBestellungObj);
+            neueBestellung.ID_Bestellung = (int)idBestellung;
+
+            foreach (Bestellposition position in neueBestellung.Positionen)
+            {
+                sqlInsertOrderPos = $"INSERT INTO Bestellposition(ID_Artikel, ID_Bestellung, Extras, Geliefert) VALUES({position.ID_Artikel}, {idBestellung}, '{position.Extras}', {position.Geliefert}) RETURNING ID_Bestellposition";
+                sqlitecommand.CommandText = sqlInsertOrderPos;
+                var bestellPosIDObj = sqlitecommand.ExecuteScalar();
+                idBestellPos = Convert.ToInt32(bestellPosIDObj);
+                position.ID_Bestellposition = idBestellPos;
+            }
         }
 
-        public static void UpdateOrder()
+           
+        public static void UpdateOrder(Bestellung neueBestellung)
         {
-            // TODO
+            string sqlUpdateOrderPos;
+            int idBestellung;
+            int idBestellPos;
+            string strTemp = "Data Source=Database.db3";
+            string bestellzeitpunkt = neueBestellung.Datum.ToString("yyyy-MM-dd hh:mm:ss");
+            string sqlInsertOrder = $"UPDATE Bestellung SET Datum = '{bestellzeitpunkt}', ID_Tisch = {neueBestellung.ID_Tisch}) WHERE ID_Bestellung = {neueBestellung.ID_Bestellung}";
+
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertOrder, sqliteconnection);
+            sqlitecommand.ExecuteNonQuery();
+
+            foreach (Bestellposition position in neueBestellung.Positionen)
+            {
+                sqlUpdateOrderPos = $"UPDATE Bestellposition SET ID_Artikel = {position.ID_Artikel}, Extras = {position.Extras}, Geliefert = {position.Geliefert} WHERE ID_Position = {position.ID_Bestellposition}";
+                sqlitecommand.CommandText = sqlUpdateOrderPos;
+                var bestellPosIDObj = sqlitecommand.ExecuteScalar();
+                idBestellPos = Convert.ToInt32(bestellPosIDObj);
+                position.ID_Bestellposition = idBestellPos;
+            }
         }
 
         public static Artikel GetArticle(int id_Artikel)
@@ -68,16 +109,90 @@ namespace Restaurant.Database
             return artikel;
         }
 
-        public static Kellner GetKellner()
+        public static Kellner GetKellner(int id_Kellner)
         {
-            // TODO
-            return new Kellner();
+            Kellner kellner = new Kellner();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Kellner, Nachname, Vorname FROM Kellner WHERE ID_Kellner = {id_Kellner}";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                kellner.ID_Kellner = sqlitereader.GetInt32(0);
+                kellner.Nachname = sqlitereader.GetString(1);
+                kellner.Vorname = sqlitereader.GetString(2);
+            }
+            sqliteconnection.Close();
+            return kellner;
         }
 
-        public static Tisch GetTisch()
+        public static Kellner GetKellner(string nachname, string vorname = null)
         {
-            // TODO
-            return new Tisch();
+            Kellner kellner = new Kellner();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Kellner, Nachname, Vorname FROM Kellner WHERE Nachname = '{nachname}'";
+            if (vorname != null)
+                sql += $" AND Vorname = '{vorname}'";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                kellner.ID_Kellner = sqlitereader.GetInt32(0);
+                kellner.Nachname = sqlitereader.GetString(1);
+                kellner.Vorname = sqlitereader.GetString(2);
+            }
+            sqliteconnection.Close();
+            return kellner;
+        }
+
+        public static Tisch GetTisch(int id_Tisch)
+        {
+            Tisch tisch = new Tisch();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Tisch, ID_Kellner FROM Tisch WHERE ID_Tisch = {id_Tisch}";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                tisch.ID_Tisch = sqlitereader.GetInt32(0);
+                tisch.ID_Kellner = sqlitereader.GetInt32(1);
+            }
+            sqliteconnection.Close();
+            return tisch;
+        }
+
+        public static List<Tisch> GetTischeForKellner(int id_Kellner)
+        {
+            List<Tisch> tische = new List<Tisch>();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Tisch, ID_Kellner FROM Tisch WHERE ID_Kellner = {id_Kellner}";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                Tisch tisch = new Tisch();
+                tisch.ID_Tisch = sqlitereader.GetInt32(0);
+                tisch.ID_Kellner = sqlitereader.GetInt32(1);
+                tische.Add(tisch);
+            }
+            sqliteconnection.Close();
+            return tische;
         }
 
         public static List<Bestellposition> GetOrderPositions(int id_Bestellung)
@@ -115,6 +230,13 @@ namespace Restaurant.Database
             return positionen;
         }
 
+        /// <summary>
+        /// Duplicate of GetTischeForKellner
+        /// <para>Gets a list of all tables, the waiter is assigned to</para>
+        /// </summary>
+        /// <param name="id_Kellner"></param>
+        /// <returns></returns>
+        [Obsolete]
         internal static List<Tisch> GetTablesForWaiter(int id_Kellner)
         {
             List<Tisch> tischliste = new List<Tisch> ();
