@@ -33,5 +33,27 @@ namespace Restaurant.Controllers
 
             return tische;
         }
+
+        [HttpGet("open", Name = "GetAllTablesWithOpenOrders")]
+        public List<Tisch> GetAllTablesWithOpenOrders()
+        {
+            List<Tisch> tische = new List<Tisch>();
+            try
+            {
+                tische = DBAccess.GetTablesWithOpenOrders();
+            }
+            catch (Exception ex)
+            {
+                tische = new List<Tisch>();
+            }
+
+            return tische;
+        }
+
+        [HttpPut("switch/{vonTisch}/{zuTisch}", Name = "SwitchTable")]
+        public void SwitchTables(int vonTisch, int zuTisch)
+        {
+            DBAccess.SwitchTables(vonTisch, zuTisch);
+        }
     }
 }

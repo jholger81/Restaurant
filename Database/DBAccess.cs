@@ -17,6 +17,8 @@ namespace Restaurant.Database
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+            if (!sqlitereader.HasRows)
+                return null;
 
             while (sqlitereader.Read())
             {
@@ -34,6 +36,25 @@ namespace Restaurant.Database
             }
 
             return bestellung;
+        }
+
+        public static List<Tisch> GetTablesWithOpenOrders()
+        {
+            var tischliste = new List<Tisch>();
+            tischliste = GetAlleTische();
+            var removeList = new List<Tisch>();
+            foreach (var tisch in tischliste)
+            {
+                if (GetOrder(tisch.ID_Tisch) == null)
+                {
+                    removeList.Add(tisch);
+                }
+            }
+            foreach (var tisch in removeList)
+            {
+                tischliste.Remove(tisch);
+            }
+            return tischliste;
         }
 
         public static void InsertOrder(Bestellung neueBestellung)
@@ -257,7 +278,7 @@ namespace Restaurant.Database
         /// <param name="id_Kellner"></param>
         /// <returns></returns>
         [Obsolete]
-        internal static List<Tisch> GetTablesForWaiter(int id_Kellner)
+        public static List<Tisch> GetTablesForWaiter(int id_Kellner)
         {
             List<Tisch> tischliste = new List<Tisch> ();
 
@@ -279,5 +300,125 @@ namespace Restaurant.Database
 
             return tischliste;
         }
+
+        public static void SwitchTables(int fromTable, int toTable)
+        {
+            string strTemp = "Data Source=Database.db3";
+            string sqlUpdateTable = $"UPDATE Bestellung SET ID_Tisch = {toTable} WHERE ID_Tisch = {fromTable}";
+
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sqlUpdateTable, sqliteconnection);
+            sqlitecommand.ExecuteNonQuery();
+            sqliteconnection.Close();
+        }
+
+        public static void SwitchWaiterTableForTable(int id_Kellner, int id_Tisch)
+        {
+            string strTemp = "Data Source=Database.db3";
+            string sqlUpdateTable = $"UPDATE Tisch SET ID_Kellner = {id_Kellner} WHERE ID_Tisch = {id_Tisch}";
+
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sqlUpdateTable, sqliteconnection);
+            sqlitecommand.ExecuteNonQuery();
+            sqliteconnection.Close();
+        }
+
+        public static List<Artikel> GetAlleGetraenke()
+        {
+            List<Artikel> getraenke = new List<Artikel>();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Artikel, Name, Preis, Kategorie FROM Artikel WHERE Kategorie = 'Getraenk'";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                Artikel getraenk = new Artikel();
+                getraenk.ID_Artikel = sqlitereader.GetInt32(0);
+                getraenk.Name = sqlitereader.GetString(1);
+                getraenk.Preis = sqlitereader.GetInt32(2);
+                getraenk.Kategorie = sqlitereader.GetString(3);
+                getraenke.Add(getraenk);
+            }
+            sqliteconnection.Close();
+            return getraenke;
+        }
+
+        public static List<Artikel> GetAlleSpeisen()
+        {
+            List<Artikel> speisen = new List<Artikel>();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Artikel, Name, Preis, Kategorie FROM Artikel WHERE Kategorie = 'Speise'";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                Artikel speise = new Artikel();
+                speise.ID_Artikel = sqlitereader.GetInt32(0);
+                speise.Name = sqlitereader.GetString(1);
+                speise.Preis = sqlitereader.GetInt32(2);
+                speise.Kategorie = sqlitereader.GetString(3);
+                speisen.Add(speise);
+            }
+            sqliteconnection.Close();
+            return speisen;
+        }
+
+        public static List<Artikel> GetAlleDesserts()
+        {
+            List<Artikel> desserts = new List<Artikel>();
+
+            string strTemp = "Data Source=Database.db3";
+            string sql = $"SELECT ID_Artikel, Name, Preis, Kategorie FROM Artikel WHERE Kategorie = 'Dessert'";
+            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            sqliteconnection.Open();
+            SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
+            SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+
+            while (sqlitereader.Read())
+            {
+                Artikel dessert = new Artikel();
+                dessert.ID_Artikel = sqlitereader.GetInt32(0);
+                dessert.Name = sqlitereader.GetString(1);
+                dessert.Preis = sqlitereader.GetInt32(2);
+                dessert.Kategorie = sqlitereader.GetString(3);
+                desserts.Add(dessert);
+            }
+            sqliteconnection.Close();
+            return desserts;
+        }
     }
 }
+
+
+// TODO
+/*
+ * ----Get
+    getTisch - (mit offenen Betr�gen -> um status zu nehmen) (Check)
+    getBestellung - Bestellte Items des Aktuellen Tischs (Check)
+    getKellnervonTisch - ID des zugewiesenen Kellner des Tisches (Check)
+getGetraenke - Liste der angebotenen Getr�nke
+getSpeisen - Liste der angebotenen Speisen
+getDesserts - Liste der angebotenen Desserts
+getBezahlteArtikel - Liste der bezahlten Artikel des Tische
+getOffeneArtikel -  Liste der noch nicht bezahlten Artikel des Tische
+
+
+
+----Set
+setTischaendern - Bestellung auf anderen Tisch zuweisen
+setKellnerzuweisen - Kellner den Tisch zuweisen
+setBestellung - Artikel zur bestellung hinzuf�gen -> + Int f�r m�gliche For-Schleife bei 3x den Selben Artikel bestellen
+setoffeneArtikelBegleichen - Auswahl von Offene Artikel Begleichen
+setKompletteBestellungBegleichen - Alle Offenen Artikel Begleichen
+setTrinkgeld - Trinkgeld zur Rechnung zuweisen
+*/
