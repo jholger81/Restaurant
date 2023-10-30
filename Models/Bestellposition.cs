@@ -12,11 +12,18 @@
     /// </summary>
     public class Bestellposition
     {
+        public enum PositionsStatus
+        {
+            Bestellt = 0,
+            Geliefert = 1,
+            Bezahlt = 2
+        }
+
         public int ID_Bestellposition { get; set; }
         public int ID_Artikel { get; set; }
         public int ID_Bestellung { get; set; }
         public string Extras { get; set; }
-        public int Geliefert { get; set; }
+        public PositionsStatus Geliefert { get; set; }
         public Artikel Artikel { get; set; }
     }
 }

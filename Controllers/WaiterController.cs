@@ -11,9 +11,9 @@ namespace Restaurant.Controllers
     [Route("waiter")]
     public class WaiterController : ControllerBase
     {
-        private readonly ILogger<OrderController> _logger;
+        private readonly ILogger<WaiterController> _logger;
 
-        public WaiterController(ILogger<OrderController> logger)
+        public WaiterController(ILogger<WaiterController> logger)
         {
             _logger = logger;
         }
@@ -36,7 +36,7 @@ namespace Restaurant.Controllers
         [HttpPut("switch/{id_Kellner}/{id_Tisch}", Name = "PutTableForWaiter")]
         public void SwitchWaiterTableForTable(int id_Kellner, int id_Tisch)
         {
-            DBAccess.SwitchWaiterTableForTable(id_Kellner, id_Tisch);
+            DBAccess.SwitchWaiterForTable(id_Kellner, id_Tisch);
         }
     }
 }
