@@ -18,31 +18,25 @@ namespace Restaurant.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{id_Tisch}", Name = "GetTablesForWaiter")]
-        public List<Tisch> GetTablesForWaiter(int? id_Tisch)
+        [HttpGet("{id_Kellner}", Name = "GetTablesForWaiter")]
+        public List<Tisch> GetTablesForWaiter(int id_Kellner)
         {
-            //TODO
-
             List<Tisch> tischliste;
             try
             {
-                tischliste = DBAccess.GetTablesForWaiter(id_Tisch.Value);
+                tischliste = DBAccess.GetTischeForKellner(id_Kellner);
             }
             catch (Exception ex)
             {
                 tischliste = new List<Tisch>();
             }
-
-            //return bestellung;
-
-
-            return new List<Tisch>();
+            return tischliste;
         }
 
-        [HttpPut(Name = "PutTableForWaiter")]
-        public void PutTableForWaiter(int id_Tisch)
+        [HttpPut("switch/{id_Kellner}/{id_Tisch}", Name = "PutTableForWaiter")]
+        public void SwitchWaiterTableForTable(int id_Kellner, int id_Tisch)
         {
-            // TODO
+            DBAccess.SwitchWaiterTableForTable(id_Kellner, id_Tisch);
         }
     }
 }

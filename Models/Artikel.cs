@@ -12,5 +12,6 @@
         public int ID_Artikel { get; set; }
         public string Name { get; set; }
         public int Preis { get; set; }
+        public string Kategorie { get; set; }
     }
 }
