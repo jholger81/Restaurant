@@ -11,9 +11,9 @@ namespace Restaurant.Controllers
     [Route("tables")]
     public class TableController : ControllerBase
     {
-        private readonly ILogger<OrderController> _logger;
+        private readonly ILogger<TableController> _logger;
 
-        public TableController(ILogger<OrderController> logger)
+        public TableController(ILogger<TableController> logger)
         {
             _logger = logger;
         }

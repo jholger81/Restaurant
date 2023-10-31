@@ -34,6 +34,38 @@ namespace Restaurant.Controllers
             return bestellung;
         }
 
+        [HttpGet("{id_Tisch}/open", Name = "GetOrderOpenPositions")]
+        public Bestellung GetOrderOpenPositions(int? id_Tisch)
+        {
+            Bestellung bestellung;
+            try
+            {
+                bestellung = DBAccess.GetOrder(id_Tisch.Value, DBAccess.GetOrderMode.Open);
+            }
+            catch (Exception ex)
+            {
+                bestellung = new Bestellung();
+            }
+
+            return bestellung;
+        }
+
+        [HttpGet("{id_Tisch}/closed", Name = "GetOrderClosedPositions")]
+        public Bestellung GetOrderClosedPositions(int? id_Tisch)
+        {
+            Bestellung bestellung;
+            try
+            {
+                bestellung = DBAccess.GetOrder(id_Tisch.Value, DBAccess.GetOrderMode.Closed);
+            }
+            catch (Exception ex)
+            {
+                bestellung = new Bestellung();
+            }
+
+            return bestellung;
+        }
+
         [HttpPost(Name = "PostNewOrder")]
         public void PostNewOrder()//(Bestellung newOrder)
         {
