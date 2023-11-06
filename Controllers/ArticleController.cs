@@ -41,6 +41,14 @@ namespace Restaurant.Controllers
             desserts = DBAccess.GetAlleDesserts();
             return desserts;
         }
+
+        [HttpGet("id/{id}", Name = "GetArticleById")]
+        public Artikel GetArticleById(int id)
+        {
+            Artikel art = new Artikel();
+            art = DBAccess.GetArticle(id);
+            return art;
+        }
     }
 }
 

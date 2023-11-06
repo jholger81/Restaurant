@@ -4,6 +4,8 @@ using Restaurant.Database;
 using Restaurant.Models;
 using System.Collections.Generic;
 using System;
+using System.Net.Http;
+using System.Text;
 
 namespace Restaurant.Controllers
 {
@@ -66,27 +68,16 @@ namespace Restaurant.Controllers
             return bestellung;
         }
 
-        [HttpPost(Name = "PostNewOrder")]
-        public void PostNewOrder()//(Bestellung newOrder)
+        [HttpPost("new", Name = "PostNewOrder")]
+        public void PostNewOrder([FromBody] Bestellung newOrder)
         {
-            Bestellung newOrder = new Bestellung();
-            newOrder = new Bestellung();
-            newOrder.Datum = DateTime.Now;
-            newOrder.ID_Tisch = 1;
-            newOrder.Positionen = new List<Bestellposition>(); // TODO        
-
-            Bestellposition newPos = new Bestellposition();
-            newPos.Geliefert = 0;
-            newPos.ID_Artikel = 1;
-            newPos.Extras = "keine Tomaten plx";
-            newOrder.Positionen.Add(newPos);
-
-            Bestellposition newPos2 = new Bestellposition();
-            newPos.Geliefert = 0;
-            newPos.ID_Artikel = 2;
-            newPos.Extras = "";
-            newOrder.Positionen.Add(newPos2);
             DBAccess.InsertOrder(newOrder);
         }
     }
 }
+
+
+//TODO Aufruf Post etwa
+//string jsonOrder = System.Text.Json.JsonSerializer.Serialize(newOrder);
+//var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+//request.Content = new StringContent(jsonOrder, Encoding.UTF8, "application/json");
