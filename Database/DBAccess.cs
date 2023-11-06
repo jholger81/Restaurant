@@ -8,16 +8,16 @@ namespace Restaurant.Database
 {
     public static class DBAccess
     {
+        public static string dbConnection = "Data Source=Database.db3";
+
         #region delivery
         //setoffeneArtikelBegleichen - Auswahl von Offene Artikel Begleichen
         //setKompletteBestellungBegleichen - Alle Offenen Artikel Begleichen
         public static void PayBillPartially(List<Bestellposition> positions)
         {
-            int idBestellPos;
             string sqlUpdateOrderPosition;
-            string strTemp = "Data Source=Database.db3";
 
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand;
             foreach (var pos in positions)
@@ -65,9 +65,8 @@ namespace Restaurant.Database
             Bestellung bestellung = new Bestellung();
             List<Bestellposition> removeList = new List<Bestellposition>();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Bestellung, Datum, ID_Tisch FROM Bestellung WHERE ID_Tisch = {id_Tisch}";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -125,9 +124,8 @@ namespace Restaurant.Database
         {
             List<Bestellposition> positionen = new List<Bestellposition>();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Bestellposition, ID_Artikel, ID_Bestellung, Extras, Geliefert FROM Bestellposition WHERE ID_Bestellung = {id_Bestellung}";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -160,11 +158,10 @@ namespace Restaurant.Database
             string sqlInsertOrderPos;
             int idBestellung;
             int idBestellPos;
-            string strTemp = "Data Source=Database.db3";
             string bestellzeitpunkt = neueBestellung.Datum.ToString("yyyy-MM-dd hh:mm:ss");
             string sqlInsertOrder = $"INSERT INTO Bestellung(Datum, ID_Tisch) VALUES('{bestellzeitpunkt}',{neueBestellung.ID_Tisch}) RETURNING ID_Bestellung";
 
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertOrder, sqliteconnection);
             var idBestellungObj = sqlitecommand.ExecuteScalar();
@@ -185,11 +182,10 @@ namespace Restaurant.Database
         {
             string sqlUpdateOrderPos;
             int idBestellPos;
-            string strTemp = "Data Source=Database.db3";
             string bestellzeitpunkt = neueBestellung.Datum.ToString("yyyy-MM-dd hh:mm:ss");
             string sqlInsertOrder = $"UPDATE Bestellung SET Datum = '{bestellzeitpunkt}', ID_Tisch = {neueBestellung.ID_Tisch}) WHERE ID_Bestellung = {neueBestellung.ID_Bestellung}";
 
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertOrder, sqliteconnection);
             sqlitecommand.ExecuteNonQuery();
@@ -229,9 +225,8 @@ namespace Restaurant.Database
         {
             Tisch tisch = new Tisch();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Tisch, ID_Kellner FROM Tisch WHERE ID_Tisch = {id_Tisch}";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -248,9 +243,8 @@ namespace Restaurant.Database
         public static List<Tisch> GetAlleTische()
         {
             List<Tisch> tische = new List<Tisch>();
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Tisch FROM Tisch";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -269,9 +263,8 @@ namespace Restaurant.Database
         {
             List<Tisch> tische = new List<Tisch>();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Tisch, ID_Kellner FROM Tisch WHERE ID_Kellner = {id_Kellner}";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -289,10 +282,9 @@ namespace Restaurant.Database
 
         public static void SwitchTables(int fromTable, int toTable)
         {
-            string strTemp = "Data Source=Database.db3";
             string sqlUpdateTable = $"UPDATE Bestellung SET ID_Tisch = {toTable} WHERE ID_Tisch = {fromTable}";
 
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sqlUpdateTable, sqliteconnection);
             sqlitecommand.ExecuteNonQuery();
@@ -301,10 +293,9 @@ namespace Restaurant.Database
 
         public static void SwitchWaiterForTable(int id_Kellner, int id_Tisch)
         {
-            string strTemp = "Data Source=Database.db3";
             string sqlUpdateTable = $"UPDATE Tisch SET ID_Kellner = {id_Kellner} WHERE ID_Tisch = {id_Tisch}";
 
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sqlUpdateTable, sqliteconnection);
             sqlitecommand.ExecuteNonQuery();
@@ -317,19 +308,16 @@ namespace Restaurant.Database
         {
             Artikel artikel = new Artikel();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Artikel, Name, Preis FROM Artikel WHERE ID_Artikel = {id_Artikel}";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
 
-            while (sqlitereader.Read())
-            {
-                artikel.ID_Artikel = sqlitereader.GetInt32(0);
-                artikel.Name = sqlitereader.GetString(1);
-                artikel.Preis = sqlitereader.GetInt32(2);
-            }
+            sqlitereader.Read();
+            artikel.ID_Artikel = sqlitereader.GetInt32(0);
+            artikel.Name = sqlitereader.GetString(1);
+            artikel.Preis = sqlitereader.GetInt32(2);
             sqliteconnection.Close();
 
             return artikel;
@@ -339,9 +327,8 @@ namespace Restaurant.Database
         {
             List<Artikel> getraenke = new List<Artikel>();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Artikel, Name, Preis, Kategorie FROM Artikel WHERE Kategorie = 'Getraenk'";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -363,9 +350,8 @@ namespace Restaurant.Database
         {
             List<Artikel> speisen = new List<Artikel>();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Artikel, Name, Preis, Kategorie FROM Artikel WHERE Kategorie = 'Speise'";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -387,9 +373,8 @@ namespace Restaurant.Database
         {
             List<Artikel> desserts = new List<Artikel>();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Artikel, Name, Preis, Kategorie FROM Artikel WHERE Kategorie = 'Dessert'";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -413,9 +398,8 @@ namespace Restaurant.Database
         {
             Kellner kellner = new Kellner();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Kellner, Nachname, Vorname FROM Kellner WHERE ID_Kellner = {id_Kellner}";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -434,11 +418,10 @@ namespace Restaurant.Database
         {
             Kellner kellner = new Kellner();
 
-            string strTemp = "Data Source=Database.db3";
             string sql = $"SELECT ID_Kellner, Nachname, Vorname FROM Kellner WHERE Nachname = '{nachname}'";
             if (vorname != null)
                 sql += $" AND Vorname = '{vorname}'";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -460,7 +443,6 @@ namespace Restaurant.Database
             List<int> prices = new List<int>();
             int sum;
 
-            string strTemp = "Data Source=Database.db3";
             string sql = @$"
                 SELECT
 	                A.Preis
@@ -474,7 +456,7 @@ namespace Restaurant.Database
                 JOIN Bestellung B
 	                ON B2R.ID_Rechnung = B.ID_Bestellung
                 WHERE CAST(Datum AS DATE) = CAST('{day.Day}' AS DATE)";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
@@ -492,7 +474,6 @@ namespace Restaurant.Database
             List<int> tips = new List<int>();
             int sum;
 
-            string strTemp = "Data Source=Database.db3";
             string sql = @$"
                 SELECT
 	                R.Trinkgeld
@@ -502,7 +483,7 @@ namespace Restaurant.Database
                 JOIN Bestellung B
 	                ON B2R.ID_Rechnung = B.ID_Bestellung
                 WHERE CAST(Datum AS DATE) = CAST('{day.Day}' AS DATE)";
-            SQLiteConnection sqliteconnection = new SQLiteConnection(strTemp);
+            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
             sqliteconnection.Open();
             SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection);
             SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
