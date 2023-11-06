@@ -170,7 +170,8 @@ namespace Restaurant.Database
 
             foreach (Bestellposition position in neueBestellung.Positionen)
             {
-                sqlInsertOrderPos = $"INSERT INTO Bestellposition(ID_Artikel, ID_Bestellung, Extras, Geliefert) VALUES({position.ID_Artikel}, {idBestellung}, '{position.Extras}', {position.Geliefert}) RETURNING ID_Bestellposition";
+                sqlInsertOrderPos = $"INSERT INTO Bestellposition(ID_Artikel, ID_Bestellung, Extras, Geliefert) VALUES({position.ID_Artikel}, {idBestellung}, '{position.Extras}', {(int)position.Geliefert}) RETURNING ID_Bestellposition";
+                sqlitecommand = new SQLiteCommand(sqlInsertOrderPos, sqliteconnection);
                 sqlitecommand.CommandText = sqlInsertOrderPos;
                 var bestellPosIDObj = sqlitecommand.ExecuteScalar();
                 idBestellPos = Convert.ToInt32(bestellPosIDObj);
