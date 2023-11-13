@@ -1,0 +1,1 @@
+GetOrderClosedPositions und GetOrderOpenPositions -> muss mit Rechnung/Rechnungsposition arbeiten (GetOrderOpenPositions -> Bestellposition nicht in Rechnungsposition, GetOrderClosedPositions -> Bestellposition in Rechnungsposition)
