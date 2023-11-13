@@ -94,8 +94,7 @@ namespace Restaurant.Database
                 {
                     foreach (var pos in bestellung.Positionen)
                     {
-                        if ((int)pos.Geliefert == (int)Bestellposition.PositionsStatus.Bestellt
-                            || (int)pos.Geliefert == (int)Bestellposition.PositionsStatus.Geliefert)
+                        if ((int)pos.Geliefert == (int)Bestellposition.PositionsStatus.Bezahlt)
                         {
                             removeList.Add(pos);
                         }
