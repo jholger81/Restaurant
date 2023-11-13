@@ -60,9 +60,9 @@ namespace Restaurant.Database
             Closed = 2
         }
 
-        public static Bestellung GetOrder(int id_Tisch, GetOrderMode mode = GetOrderMode.All)
+        public static List<Bestellung> GetOrder(int id_Tisch, GetOrderMode mode = GetOrderMode.All)
         {
-            Bestellung bestellung = new Bestellung();
+            List<Bestellung> bestellungen = new List<Bestellung>();
             List<Bestellposition> removeList = new List<Bestellposition>();
 
             string sql = $"SELECT ID_Bestellung, Datum, ID_Tisch FROM Bestellung WHERE ID_Tisch = {id_Tisch}";
@@ -76,48 +76,53 @@ namespace Restaurant.Database
             // read orders
             while (sqlitereader.Read())
             {
+                Bestellung bestellung = new Bestellung();
                 bestellung.ID_Bestellung = sqlitereader.GetInt32(0);
                 bestellung.Datum = DateTime.Parse(sqlitereader.GetString(1));
                 bestellung.ID_Tisch = sqlitereader.GetInt32(2);
+                bestellungen.Add(bestellung);
             }
             sqliteconnection.Close();
 
-            // read order positions
-            bestellung.Positionen = GetOrderPositions(bestellung.ID_Bestellung);
-
-            // remove open or closed positions, if necessary
-            if (mode == GetOrderMode.Open)
+            foreach (var bestellung in bestellungen)
             {
-                foreach (var pos in bestellung.Positionen)
+                // read order positions
+                bestellung.Positionen = GetOrderPositions(bestellung.ID_Bestellung);
+
+                // remove open or closed positions, if necessary
+                if (mode == GetOrderMode.Open)
                 {
-                    if ((int)pos.Geliefert == (int)Bestellposition.PositionsStatus.Bezahlt)
+                    foreach (var pos in bestellung.Positionen)
                     {
-                        removeList.Add(pos);
+                        if ((int)pos.Geliefert == (int)Bestellposition.PositionsStatus.Bezahlt)
+                        {
+                            removeList.Add(pos);
+                        }
                     }
                 }
-            }
-            if (mode == GetOrderMode.Closed)
-            {
-                foreach (var pos in bestellung.Positionen)
+                if (mode == GetOrderMode.Closed)
                 {
-                    if ((int)pos.Geliefert != (int)Bestellposition.PositionsStatus.Bezahlt)
+                    foreach (var pos in bestellung.Positionen)
                     {
-                        removeList.Add(pos);
+                        if ((int)pos.Geliefert != (int)Bestellposition.PositionsStatus.Bezahlt)
+                        {
+                            removeList.Add(pos);
+                        }
                     }
                 }
-            }
-            foreach (var pos in removeList)
-            {
-                bestellung.Positionen.Remove(pos);
+                foreach (var pos in removeList)
+                {
+                    bestellung.Positionen.Remove(pos);
+                }
+
+                // read articles for order positions
+                foreach (Bestellposition position in bestellung.Positionen)
+                {
+                    position.Artikel = GetArticle(position.ID_Artikel);
+                }
             }
 
-            // read articles for order positions
-            foreach (Bestellposition position in bestellung.Positionen)
-            {
-                position.Artikel = GetArticle(position.ID_Artikel);
-            }
-
-            return bestellung;
+            return bestellungen;
         }
 
         public static List<Bestellposition> GetOrderPositions(int id_Bestellung)

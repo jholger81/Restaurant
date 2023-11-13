@@ -22,48 +22,48 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet("{id_Tisch}", Name = "GetOrder")]
-        public Bestellung GetOrder(int? id_Tisch)
+        public List<Bestellung> GetOrder(int? id_Tisch)
         {
-            Bestellung bestellung;
+            List<Bestellung> bestellung;
             try
             {
                 bestellung = DBAccess.GetOrder(id_Tisch.Value);
             }
             catch (Exception ex)
             {
-                bestellung = new Bestellung();
+                bestellung = new List<Bestellung>();
             }
 
             return bestellung;
         }
 
         [HttpGet("{id_Tisch}/open", Name = "GetOrderOpenPositions")]
-        public Bestellung GetOrderOpenPositions(int? id_Tisch)
+        public List<Bestellung> GetOrderOpenPositions(int? id_Tisch)
         {
-            Bestellung bestellung;
+            List<Bestellung> bestellungen;
             try
             {
-                bestellung = DBAccess.GetOrder(id_Tisch.Value, DBAccess.GetOrderMode.Open);
+                bestellungen = DBAccess.GetOrder(id_Tisch.Value, DBAccess.GetOrderMode.Open);
             }
             catch (Exception ex)
             {
-                bestellung = new Bestellung();
+                bestellungen = new List<Bestellung>();
             }
 
-            return bestellung;
+            return bestellungen;
         }
 
         [HttpGet("{id_Tisch}/closed", Name = "GetOrderClosedPositions")]
-        public Bestellung GetOrderClosedPositions(int? id_Tisch)
+        public List<Bestellung> GetOrderClosedPositions(int? id_Tisch)
         {
-            Bestellung bestellung;
+            List<Bestellung> bestellung;
             try
             {
                 bestellung = DBAccess.GetOrder(id_Tisch.Value, DBAccess.GetOrderMode.Closed);
             }
             catch (Exception ex)
             {
-                bestellung = new Bestellung();
+                bestellung = new List<Bestellung>();
             }
 
             return bestellung;
@@ -82,7 +82,7 @@ namespace Restaurant.Controllers
             {
                 result.StatusCode = HttpStatusCode.InternalServerError;
             }
-            return result;
+          return result;
         }
     }
 }
