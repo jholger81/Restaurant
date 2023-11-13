@@ -4,6 +4,8 @@ using Restaurant.Database;
 using Restaurant.Models;
 using System.Collections.Generic;
 using System;
+using System.Net.Http;
+using System.Net;
 
 namespace Restaurant.Controllers
 {
@@ -51,9 +53,19 @@ namespace Restaurant.Controllers
         }
 
         [HttpPut("switch/{vonTisch}/{zuTisch}", Name = "SwitchTable")]
-        public void SwitchTables(int vonTisch, int zuTisch)
+        public HttpResponseMessage SwitchTables(int vonTisch, int zuTisch)
         {
-            DBAccess.SwitchTables(vonTisch, zuTisch);
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                DBAccess.SwitchTables(vonTisch, zuTisch);
+                result.StatusCode = HttpStatusCode.OK;
+            }
+            catch
+            {
+                result.StatusCode = HttpStatusCode.InternalServerError;
+            }
+            return result;
         }
     }
 }

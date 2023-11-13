@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Net;
 
 namespace Restaurant.Controllers
 {
@@ -69,9 +70,19 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost("new", Name = "PostNewOrder")]
-        public void PostNewOrder([FromBody] Bestellung newOrder)
+        public HttpResponseMessage PostNewOrder([FromBody] Bestellung newOrder)
         {
-            DBAccess.InsertOrder(newOrder);
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                DBAccess.InsertOrder(newOrder);
+                result.StatusCode = HttpStatusCode.OK;
+            }
+            catch
+            {
+                result.StatusCode = HttpStatusCode.InternalServerError;
+            }
+            return result;
         }
     }
 }

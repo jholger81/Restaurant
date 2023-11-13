@@ -52,7 +52,7 @@ namespace Restaurant.Database
         }
         #endregion
 
-            #region order
+        #region order
         public enum GetOrderMode
         {
             All = 0,
