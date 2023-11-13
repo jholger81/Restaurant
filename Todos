@@ -1,1 +1,2 @@
 GetOrderClosedPositions und GetOrderOpenPositions -> muss mit Rechnung/Rechnungsposition arbeiten (GetOrderOpenPositions -> Bestellposition nicht in Rechnungsposition, GetOrderClosedPositions -> Bestellposition in Rechnungsposition)
+Datenbank: Tabelle Rechnungsposition -> Spalte ID_Artikel mit ID_Bestellposition tauschen (bei Artikeln die öfters gebucht wurden für einen Tisch würde er aktuell bei bezahlen von einem der Mehrfach angegebenen Artikeln, ALLE als bezahlt setzen.) 
