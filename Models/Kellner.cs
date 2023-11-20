@@ -12,5 +12,7 @@
         public int ID_Kellner { get; set; }
         public string Vorname { get; set; }
         public string Nachname { get; set; }
+        public string LoginName { get; set; }
+        public string Passwort { get; set; }
     }
 }
