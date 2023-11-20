@@ -36,9 +36,10 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet("login", Name = "Login")]
-        public int Login([FromBody]Kellner kellner)
+        public Kellner Login([FromBody]Kellner kellner)
         {
             int kellnerID;
+            Kellner kellnerObj = new Kellner();
             try
             {
                 kellnerID = DBAccess.CheckLogin(kellner);
@@ -47,7 +48,8 @@ namespace Restaurant.Controllers
             {
                 kellnerID = 0;
             }
-            return kellnerID;
+            kellnerObj.ID_Kellner = kellnerID;
+            return kellnerObj;
         }
 
         [HttpPut("switch/{id_Kellner}/{id_Tisch}", Name = "PutTableForWaiter")]

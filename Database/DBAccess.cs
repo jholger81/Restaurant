@@ -582,8 +582,8 @@ namespace Restaurant.Database
                 SELECT 
                     ID_Kellner
                 FROM Kellner 
-                WHERE Nachname = '{kellner.LoginName}'
-                AND Passwort = {kellner.Passwort}";
+                WHERE LoginName = '{kellner.LoginName}'
+                AND Passwort = '{kellner.Passwort}'";
             using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
             {
                 using (SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection))
