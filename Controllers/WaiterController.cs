@@ -35,6 +35,21 @@ namespace Restaurant.Controllers
             return tischliste;
         }
 
+        [HttpGet("login", Name = "Login")]
+        public int Login([FromBody]Kellner kellner)
+        {
+            int kellnerID;
+            try
+            {
+                kellnerID = DBAccess.CheckLogin(kellner);
+            }
+            catch (Exception ex)
+            {
+                kellnerID = 0;
+            }
+            return kellnerID;
+        }
+
         [HttpPut("switch/{id_Kellner}/{id_Tisch}", Name = "PutTableForWaiter")]
         public HttpResponseMessage SwitchWaiterTableForTable(int id_Kellner, int id_Tisch)
         {

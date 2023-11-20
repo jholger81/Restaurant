@@ -52,13 +52,31 @@ namespace Restaurant.Controllers
             return tische;
         }
 
-        [HttpPut("switch/{vonTisch}/{zuTisch}", Name = "SwitchTable")]
-        public HttpResponseMessage SwitchTables(int vonTisch, int zuTisch)
+        //[HttpPut("switch/from/{vonTisch}/to/{zuTisch}", Name = "SwitchTable")]
+        //public HttpResponseMessage SwitchTables(int vonTisch, int zuTisch)
+        //{
+        //    HttpResponseMessage result = new HttpResponseMessage();
+        //    try
+        //    {
+        //        DBAccess.SwitchTables(vonTisch, zuTisch);
+        //        result.StatusCode = HttpStatusCode.OK;
+        //    }
+        //    catch
+        //    {
+        //        result.StatusCode = HttpStatusCode.InternalServerError;
+        //    }
+        //    return result;
+        //}
+
+        [HttpPut("switch", Name = "SwitchTable")]
+        public HttpResponseMessage SwitchTables([FromBody]List<Tisch> tische)
         {
+            Tisch vonTisch = tische[0];
+            Tisch zuTisch = tische[1];
             HttpResponseMessage result = new HttpResponseMessage();
             try
             {
-                DBAccess.SwitchTables(vonTisch, zuTisch);
+                DBAccess.SwitchTables(vonTisch.ID_Tisch, zuTisch.ID_Tisch);
                 result.StatusCode = HttpStatusCode.OK;
             }
             catch
@@ -67,5 +85,23 @@ namespace Restaurant.Controllers
             }
             return result;
         }
+
+        //[HttpPut("switch", Name = "SwitchTable")]
+        //public HttpResponseMessage SwitchTables([FromBody] List<int> tische)
+        //{
+        //    int vonTisch = tische[0];
+        //    int zuTisch = tische[1];
+        //    HttpResponseMessage result = new HttpResponseMessage();
+        //    try
+        //    {
+        //        DBAccess.SwitchTables(vonTisch, zuTisch);
+        //        result.StatusCode = HttpStatusCode.OK;
+        //    }
+        //    catch
+        //    {
+        //        result.StatusCode = HttpStatusCode.InternalServerError;
+        //    }
+        //    return result;
+        //}
     }
 }
