@@ -52,8 +52,8 @@ namespace Restaurant.Controllers
             return kellnerObj;
         }
 
-        [HttpPut("switch/{id_Kellner}/{id_Tisch}", Name = "PutTableForWaiter")]
-        public HttpResponseMessage SwitchWaiterTableForTable(int id_Kellner, int id_Tisch)
+        [HttpGet("switch/{id_Kellner}/{id_Tisch}", Name = "PutTableForWaiter")]
+        public HttpResponseMessage SwitchWaiterForTable(int id_Kellner, int id_Tisch)
         {
             HttpResponseMessage result = new HttpResponseMessage();
             try

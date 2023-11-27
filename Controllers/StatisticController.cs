@@ -19,24 +19,42 @@ namespace Restaurant.Controllers
             _logger = logger;
         }
 
-        [HttpGet("income", Name = "GetDailyIncome")]
-        public int GetDailyIncome(DateTime day = default(DateTime))
+        [HttpGet("income/today", Name = "GetDailyIncomeToday")]
+        public int GetDailyIncomeToday()
         {
+            DateTime day = DateTime.Today;
             int income;
-            if (day == default(DateTime))
-                day = DateTime.Today;
             income = DBAccess.GetDailyIncome(day);
 
             return income;
         }
 
-        [HttpGet("tips", Name = "GetDailyTips")]
-        public int GetDailyTips(DateTime day = default(DateTime))
+        [HttpGet("income/{day}", Name = "GetDailyIncome")]
+        public int GetDailyIncome(string day)
         {
+            var dayAsDT = Convert.ToDateTime(day);
+            int income;
+            income = DBAccess.GetDailyIncome(dayAsDT);
+
+            return income;
+        }
+
+        [HttpGet("tips/today", Name = "GetDailyTipsToday")]
+        public int GetDailyTipsToday()
+        {
+            DateTime day = DateTime.Today;
             int tips;
-            if (day == default(DateTime))
-                day = DateTime.Today;
             tips = DBAccess.GetDailyTips(day);
+
+            return tips;
+        }
+
+        [HttpGet("tips/{day}", Name = "GetDailyTips")]
+        public int GetDailyTips(string day)
+        {
+            var dayAsDT = Convert.ToDateTime(day);
+            int tips;
+            tips = DBAccess.GetDailyTips(dayAsDT);
 
             return tips;
         }
