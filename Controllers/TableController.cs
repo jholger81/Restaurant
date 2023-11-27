@@ -52,22 +52,6 @@ namespace Restaurant.Controllers
             return tische;
         }
 
-        //[HttpPut("switch/from/{vonTisch}/to/{zuTisch}", Name = "SwitchTable")]
-        //public HttpResponseMessage SwitchTables(int vonTisch, int zuTisch)
-        //{
-        //    HttpResponseMessage result = new HttpResponseMessage();
-        //    try
-        //    {
-        //        DBAccess.SwitchTables(vonTisch, zuTisch);
-        //        result.StatusCode = HttpStatusCode.OK;
-        //    }
-        //    catch
-        //    {
-        //        result.StatusCode = HttpStatusCode.InternalServerError;
-        //    }
-        //    return result;
-        //}
-
         [HttpPut("switch", Name = "SwitchTable")]
         public HttpResponseMessage SwitchTables([FromBody]List<Tisch> tische)
         {
@@ -85,23 +69,5 @@ namespace Restaurant.Controllers
             }
             return result;
         }
-
-        //[HttpPut("switch", Name = "SwitchTable")]
-        //public HttpResponseMessage SwitchTables([FromBody] List<int> tische)
-        //{
-        //    int vonTisch = tische[0];
-        //    int zuTisch = tische[1];
-        //    HttpResponseMessage result = new HttpResponseMessage();
-        //    try
-        //    {
-        //        DBAccess.SwitchTables(vonTisch, zuTisch);
-        //        result.StatusCode = HttpStatusCode.OK;
-        //    }
-        //    catch
-        //    {
-        //        result.StatusCode = HttpStatusCode.InternalServerError;
-        //    }
-        //    return result;
-        //}
     }
 }

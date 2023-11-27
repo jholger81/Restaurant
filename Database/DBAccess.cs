@@ -10,45 +10,49 @@ namespace Restaurant.Database
     {
         public static string dbConnection = "Data Source=Database.db3";
 
-        #region delivery
+        #region invoice
+        // rechnungen auslesen
+        // anzeige aller offenen speisen und getränke für die theke/küche
+
         //setoffeneArtikelBegleichen - Auswahl von Offene Artikel Begleichen
         //setKompletteBestellungBegleichen - Alle Offenen Artikel Begleichen
-        public static void PayBillPartially(List<Bestellposition> positions)
+        public static void PayBillPartially(List<Bestellposition> positions, int trinkgeld)
         {
-            string sqlUpdateOrderPosition;
-
-            SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection);
-            sqliteconnection.Open();
+            string sqlUpdateOrderPosition, sqlInsertInvoice, sqlInsertInvoicePos;
             SQLiteCommand sqlitecommand;
-            foreach (var pos in positions)
+
+            using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
             {
-                sqlUpdateOrderPosition = @$"
-                    UPDATE Bestellposition
-                    SET Geliefert = 2
-                    WHERE ID_BESTELLPOSITION = {pos.ID_Bestellposition};";
-                sqlitecommand = new SQLiteCommand(sqlUpdateOrderPosition, sqliteconnection);
-                sqlitecommand.ExecuteNonQuery();
-                pos.Geliefert = Bestellposition.PositionsStatus.Bezahlt;
+                // Rechnung anlegen
+                sqlInsertInvoice = @$"
+                    INSERT INTO Rechnung(Trinkgeld)
+                    VALUES({trinkgeld})
+                    RETURNING ID_Rechnung";
+                sqlitecommand = new SQLiteCommand(sqlInsertInvoice, sqliteconnection);
+                int idInvoice = (int)sqlitecommand.ExecuteScalar();
+
+                sqliteconnection.Open();
+                foreach (var pos in positions)
+                {
+                    // Bestellpositionen auf bezahlt setzen
+                    // geliefert = 2 ==> bezahlt
+                    sqlUpdateOrderPosition = @$"
+                        UPDATE Bestellposition
+                        SET Geliefert = 2
+                        WHERE ID_BESTELLPOSITION = {pos.ID_Bestellposition};";
+                    sqlitecommand = new SQLiteCommand(sqlUpdateOrderPosition, sqliteconnection);
+                    sqlitecommand.ExecuteNonQuery();
+                    pos.Geliefert = Bestellposition.PositionsStatus.Bezahlt;
+
+                    // Position in Rechnungspositionen einfügen und zur Rechnung verknüpfen
+                    sqlInsertInvoicePos = $@"
+                        INSERT INTO Rechnungposition(ID_Rechnung, ID_Artikel)
+                        VALUES({idInvoice}, {pos.ID_Artikel})
+                        RETURNING ID_Rechnungsposition;";
+                    sqlitecommand = new SQLiteCommand(sqlInsertInvoicePos, sqliteconnection);
+                    sqlitecommand.ExecuteNonQuery();
+                }
             }
-
-            string sqlInsertInvoice = @$"
-                INSERT INTO Rechnung(Trinkgeld)
-                VALUES(0)
-                RETURNING ID_Rechnung";
-            sqlitecommand = new SQLiteCommand(sqlInsertInvoice, sqliteconnection);
-            int idInvoice = (int)sqlitecommand.ExecuteScalar();
-
-            // TODO in Rechnungspositionen-Tabelle einfügen; foreach mit idInvoice
-
-
-            //foreach (Bestellposition position in neueBestellung.Positionen)
-            //{
-            //    sqlUpdateOrderPos = $"UPDATE Bestellposition SET ID_Artikel = {position.ID_Artikel}, Extras = {position.Extras}, Geliefert = {position.Geliefert} WHERE ID_Position = {position.ID_Bestellposition}";
-            //    sqlitecommand.CommandText = sqlUpdateOrderPos;
-            //    var bestellPosIDObj = sqlitecommand.ExecuteScalar();
-            //    idBestellPos = Convert.ToInt32(bestellPosIDObj);
-            //    position.ID_Bestellposition = idBestellPos;
-            //}
         }
         #endregion
 
@@ -58,6 +62,49 @@ namespace Restaurant.Database
             All = 0,
             Open = 1,
             Closed = 2
+        }
+
+        public static List<Bestellposition> GetAllOpenOrderPositions()
+        {
+            List<Bestellposition> positions = new List<Bestellposition>();
+
+            string sqlcommand = @$"
+                SELECT 
+                    ID_Bestellposition, 
+                    ID_Artikel, 
+                    ID_Bestellung, 
+                    Geliefert, 
+                    Extras
+                FROM Bestellposition 
+                WHERE Geliefert = 0";
+
+            using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
+            {
+                sqliteconnection.Open();
+                using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlcommand, sqliteconnection))
+                {
+                    SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader();
+                    if (!sqlitereader.HasRows)
+                        return null;
+
+                    // read orders
+                    while (sqlitereader.Read())
+                    {
+                        Bestellposition pos = new Bestellposition();
+                        pos.ID_Bestellposition = sqlitereader.GetInt32(0);
+                        pos.ID_Artikel = sqlitereader.GetInt32(1);
+                        pos.ID_Bestellung = sqlitereader.GetInt32(2);
+                        pos.Geliefert = (Bestellposition.PositionsStatus)(sqlitereader.GetInt32(3));
+                        //if (sqlitereader.GetString(4) == DBNull.Value)
+                        if (sqlitereader["Extras"] == DBNull.Value)
+                            pos.Extras = null;
+                        else
+                            pos.Extras = sqlitereader.GetString(4);
+                        positions.Add(pos);
+                    }
+                }
+            }
+            return positions;
         }
 
         public static List<Bestellung> GetOrder(int id_Tisch, GetOrderMode mode = GetOrderMode.All)
@@ -359,7 +406,12 @@ namespace Restaurant.Database
                 UPDATE Bestellung 
                 SET ID_Tisch = {toTable} 
                 WHERE ID_Tisch = {fromTable} 
-                AND Geliefert IN {0,1}";
+                AND ID_Bestellung IN (
+                    SELECT 
+                        ID_Bestellung 
+                    FROM Bestellposition 
+                    WHERE geliefert IN (0, 1)
+                )";
             using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
             {
                 using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlUpdateTable, sqliteconnection))
@@ -673,16 +725,3 @@ namespace Restaurant.Database
         #endregion
     }
 }
-
-
-// TODO
-/*
-
-----Set
-    setTischaendern - Bestellung auf anderen Tisch zuweisen
-    setKellnerzuweisen - Kellner den Tisch zuweisen
-setBestellung - Artikel zur bestellung hinzuf�gen -> + Int f�r m�gliche For-Schleife bei 3x den Selben Artikel bestellen
-setoffeneArtikelBegleichen - Auswahl von Offene Artikel Begleichen
-setKompletteBestellungBegleichen - Alle Offenen Artikel Begleichen
-setTrinkgeld - Trinkgeld zur Rechnung zuweisen
-*/

@@ -69,6 +69,22 @@ namespace Restaurant.Controllers
             return bestellung;
         }
 
+        [HttpGet("open", Name = "GetAllOpenOrderPositions")]
+        public List<Bestellposition> GetAllOpenOrderPositions()
+        {
+            List<Bestellposition> positions;
+            try
+            {
+                positions = DBAccess.GetAllOpenOrderPositions();
+            }
+            catch (Exception ex)
+            {
+                positions = new List<Bestellposition>();
+            }
+
+            return positions;
+        }
+
         [HttpPost("new", Name = "PostNewOrder")]
         public HttpResponseMessage PostNewOrder([FromBody] Bestellung newOrder)
         {
@@ -84,20 +100,21 @@ namespace Restaurant.Controllers
             }
           return result;
         }
+
+        [HttpPost("pay/{trinkgeld}", Name = "PayOrder")]
+        public HttpResponseMessage PostNewOrder([FromBody] List<Bestellposition> orderpositions, int trinkgeld)
+        {
+            HttpResponseMessage result = new HttpResponseMessage();
+            try
+            {
+                DBAccess.PayBillPartially(orderpositions, trinkgeld);
+                result.StatusCode = HttpStatusCode.OK;
+            }
+            catch
+            {
+                result.StatusCode = HttpStatusCode.InternalServerError;
+            }
+            return result;
+        }
     }
 }
-
-
-//TODO Aufruf Post etwa
-//string jsonOrder = System.Text.Json.JsonSerializer.Serialize(newOrder);
-//var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
-//request.Content = new StringContent(jsonOrder, Encoding.UTF8, "application/json");
-//HttpResponseMessage response = await httpClient.SendAsync(request);
-//if (response.IsSuccessStatusCode)
-//{
-//    Console.WriteLine("Die Bestellung wurde erfolgreich an die API gesendet.");
-//}
-//else
-//{
-//    Console.WriteLine($"Fehler beim Senden der Bestellung. HTTP-Statuscode: {response.StatusCode}");
-//}
