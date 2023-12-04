@@ -107,7 +107,8 @@ namespace Restaurant.Controllers
             HttpResponseMessage result = new HttpResponseMessage();
             try
             {
-                DBAccess.PayBillPartially(orderpositions, trinkgeld);
+                var reconstructedPositions = DBAccess.ReconstructPositions(orderpositions);
+                DBAccess.PayBillPartially(reconstructedPositions, trinkgeld);
                 result.StatusCode = HttpStatusCode.OK;
             }
             catch

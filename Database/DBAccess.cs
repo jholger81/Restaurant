@@ -16,43 +16,91 @@ namespace Restaurant.Database
 
         //setoffeneArtikelBegleichen - Auswahl von Offene Artikel Begleichen
         //setKompletteBestellungBegleichen - Alle Offenen Artikel Begleichen
+
+        public static List<Bestellposition> ReconstructPositions(List<Bestellposition> positions)
+        {
+            List<Bestellposition> recoveredPositions = new List<Bestellposition>();
+            foreach (var pos in positions)
+            {
+                Bestellposition recoveredPos = GetOrderPosition(pos.ID_Bestellposition);
+                recoveredPositions.Add(recoveredPos);
+            }
+            return recoveredPositions;
+        }
+
         public static void PayBillPartially(List<Bestellposition> positions, int trinkgeld)
         {
-            string sqlUpdateOrderPosition, sqlInsertInvoice, sqlInsertInvoicePos;
-            SQLiteCommand sqlitecommand;
+            string sqlUpdateOrderPosition, sqlInsertInvoice, sqlInsertInvoicePos, sqlInsertIntoBestellung_Rechnung;
+            int idInvoice;
 
             using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
             {
+                sqliteconnection.Open();
                 // Rechnung anlegen
                 sqlInsertInvoice = @$"
                     INSERT INTO Rechnung(Trinkgeld)
                     VALUES({trinkgeld})
                     RETURNING ID_Rechnung";
-                sqlitecommand = new SQLiteCommand(sqlInsertInvoice, sqliteconnection);
-                int idInvoice = (int)sqlitecommand.ExecuteScalar();
-
-                sqliteconnection.Open();
-                foreach (var pos in positions)
+                using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertInvoice, sqliteconnection))
                 {
+                    var idObj = sqlitecommand.ExecuteScalar();
+                    idInvoice = Convert.ToInt32(idObj);
+                }
+            }
+
+                List<int> idList = new List<int>();
+            foreach (var pos in positions)
+            {
+                using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
+                {
+                    sqliteconnection.Open();
                     // Bestellpositionen auf bezahlt setzen
                     // geliefert = 2 ==> bezahlt
                     sqlUpdateOrderPosition = @$"
                         UPDATE Bestellposition
                         SET Geliefert = 2
                         WHERE ID_BESTELLPOSITION = {pos.ID_Bestellposition};";
-                    sqlitecommand = new SQLiteCommand(sqlUpdateOrderPosition, sqliteconnection);
-                    sqlitecommand.ExecuteNonQuery();
-                    pos.Geliefert = Bestellposition.PositionsStatus.Bezahlt;
+                    using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlUpdateOrderPosition, sqliteconnection))
+                    {
+                        sqlitecommand.ExecuteNonQuery();
+                        pos.Geliefert = Bestellposition.PositionsStatus.Bezahlt;
+                    }
 
                     // Position in Rechnungspositionen einfügen und zur Rechnung verknüpfen
                     sqlInsertInvoicePos = $@"
                         INSERT INTO Rechnungposition(ID_Rechnung, ID_Artikel)
-                        VALUES({idInvoice}, {pos.ID_Artikel})
-                        RETURNING ID_Rechnungsposition;";
-                    sqlitecommand = new SQLiteCommand(sqlInsertInvoicePos, sqliteconnection);
-                    sqlitecommand.ExecuteNonQuery();
+                        VALUES({idInvoice}, {pos.ID_Artikel})";
+                    using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertInvoicePos, sqliteconnection))
+                    {
+                        sqlitecommand.ExecuteNonQuery();
+                    }
+
+                    if (!idList.Contains(pos.ID_Bestellung))
+                        idList.Add(pos.ID_Bestellung);
                 }
             }
+
+                foreach (int id in idList)
+                {
+                    using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
+                    {
+                        sqliteconnection.Open();
+                        sqlInsertIntoBestellung_Rechnung = @$"
+                        INSERT INTO Bestellung_Rechnung(ID_Bestellung, ID_Rechnung)
+                        VALUES({id}, {idInvoice})";
+                        using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlInsertIntoBestellung_Rechnung, sqliteconnection))
+                        {
+                            sqlitecommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+                // TODO es fehlt:
+                // in Bestellung_Rechnung einfügen
+                // ID_Artikel in Rechnungposition (vom Client aus nicht mitgesendet?)
+
+
+                // get order ids of orderpositions
+                // foreach different orderid: insert into Bestellung_Rechnung mit gleicher id_rechnung
         }
 
         public static List<Rechnungposition> GetPaidPositions(int tischnummer)
@@ -210,6 +258,7 @@ namespace Restaurant.Database
         {
             List<Bestellung> bestellungen = new List<Bestellung>();
             List<Bestellposition> removeList = new List<Bestellposition>();
+            List<Bestellung> removeOrderList = new List<Bestellung>();
 
             string sqlcommand = @$"
                 SELECT 
@@ -277,7 +326,62 @@ namespace Restaurant.Database
                     position.Artikel = GetArticle(position.ID_Artikel);
                 }
             }
+
+            foreach(var bestellung in bestellungen)
+            {
+                if (bestellung.Positionen?.Count == 0 || bestellung.Positionen == null)
+                {
+                    removeOrderList.Add(bestellung);
+                }
+            }
+            foreach(var bestellung in removeOrderList)
+            {
+                bestellungen.Remove(bestellung);
+            }
             return bestellungen;
+        }
+
+        public static Bestellposition GetOrderPosition(int id_Bestellungposition)
+        {
+            Bestellposition position = new Bestellposition();
+            
+            string sqlcommand = @$"
+                SELECT 
+                    ID_Bestellposition, 
+                    ID_Artikel, 
+                    ID_Bestellung, 
+                    Extras, 
+                    Geliefert 
+                FROM Bestellposition 
+                WHERE ID_Bestellposition = {id_Bestellungposition}";
+
+            using (SQLiteConnection sqliteconnection =  new SQLiteConnection(dbConnection))
+            {
+                sqliteconnection.Open();
+                using (SQLiteCommand sqlitecommand = new SQLiteCommand(sqlcommand, sqliteconnection))
+                {
+                    using (SQLiteDataReader sqlitereader = sqlitecommand.ExecuteReader())
+                    {
+                        if (sqlitereader.Read())
+                        {
+                            position.ID_Bestellposition = sqlitereader.GetInt32(0);
+                            position.ID_Artikel = sqlitereader.GetInt32(1);
+                            position.ID_Bestellung = sqlitereader.GetInt32(2);
+                            try
+                            {
+                                position.Extras = sqlitereader.GetString(3);
+                            }
+                            catch (Exception ex)
+                            {
+                                position.Extras = null;
+                                Console.WriteLine($"{ex.Message}");
+                            }
+                            position.Geliefert = (Bestellposition.PositionsStatus)sqlitereader.GetInt32(4);
+                        }
+                    }
+                }
+            }
+            return position;
         }
 
         public static List<Bestellposition> GetOrderPositions(int id_Bestellung)
