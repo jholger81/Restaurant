@@ -102,7 +102,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost("pay/{trinkgeld}", Name = "PayOrder")]
-        public HttpResponseMessage PostNewOrder([FromBody] List<Bestellposition> orderpositions, int trinkgeld)
+        public HttpResponseMessage PayOrder([FromBody] List<Bestellposition> orderpositions, int trinkgeld)
         {
             HttpResponseMessage result = new HttpResponseMessage();
             try

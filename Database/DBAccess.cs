@@ -54,6 +54,105 @@ namespace Restaurant.Database
                 }
             }
         }
+
+        public static List<Rechnungposition> GetPaidPositions(int tischnummer)
+        {
+            List<int> idList = new List<int>();
+            List<Rechnungposition> rechnungPositionen= new List<Rechnungposition>();
+            // select all ID_Bestellung for a given ID_Tisch, where there are open order positions
+            string sqlGetPositions = @$"
+                    SELECT 
+                        o.ID_Bestellung
+                    FROM Bestellung o
+                    JOIN Bestellposition op
+                        ON o.ID_Bestellung = op.ID_Bestellung
+                    WHERE
+                        op.Geliefert <> 2
+                    AND 
+                        o.ID_Tisch = {tischnummer}
+                    GROUP BY o.ID_Bestellung;";
+            
+            SQLiteCommand sqlitecommand;
+            using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
+            {
+                using (sqlitecommand = new SQLiteCommand(sqlGetPositions, sqliteconnection))
+                {
+                    sqliteconnection.Open();
+                    using (SQLiteDataReader sqliteReader = sqlitecommand.ExecuteReader())
+                    {
+                        while (sqliteReader.Read())
+                        {
+                            int idBestellung = sqliteReader.GetInt32(0);
+                            idList.Add(idBestellung);
+                        }
+                    }
+                }
+                foreach (int id in idList)
+                {
+                    // select all invoice positions for a given order (ID_Bestellung)
+                    string sqlGetInvoicePositionsToOrders = @$"
+                            SELECT
+                                ip.ID_Rechnungposition,
+                                ip.ID_Rechnung,
+                                ip.ID_Artikel
+                            FROM Rechnung i
+                            JOIN Bestellung_Rechnung oi
+                                ON i.ID_Rechnung = oi.ID_Rechnung
+                            JOIN Bestellung o
+                                ON oi.ID_Bestellung = o.ID_Bestellung
+                            JOIN Rechnungposition ip
+	                            ON i.ID_Rechnung = ip.ID_Rechnung
+                            WHERE 
+                                o.ID_Bestellung = {id}
+                            
+                                ";
+                    using (sqlitecommand = new SQLiteCommand(sqlGetInvoicePositionsToOrders, sqliteconnection))
+                    {
+                        using (SQLiteDataReader reader = sqlitecommand.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Rechnungposition rechnungPos = new Rechnungposition();
+                                rechnungPos.ID_Rechnungposition = reader.GetInt32(0);
+                                rechnungPos.ID_Rechnung = reader.GetInt32(1);
+                                rechnungPos.ID_Artikel = reader.GetInt32(2);
+                                rechnungPositionen.Add(rechnungPos);
+                            }
+                        }
+                    }
+                }
+                foreach (var pos in rechnungPositionen)
+                {
+                    // get article for given article id (ID_Artikel)
+                    string sqlGetArticle = @$"
+                            SELECT
+                                ID_Artikel, 
+                                Name, 
+                                Preis, 
+                                Kategorie
+                            FROM Artikel
+                            WHERE 
+                                ID_Artikel = {pos.ID_Artikel}";
+                    using (sqlitecommand = new SQLiteCommand(sqlGetArticle, sqliteconnection))
+                    {
+                        using (SQLiteDataReader reader = sqlitecommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Artikel artikel = new Artikel();
+                                artikel.ID_Artikel = reader.GetInt32(0);
+                                artikel.Name = reader.GetString(1);
+                                artikel.Preis = reader.GetInt32(2);
+                                artikel.Kategorie = reader.GetString(3);
+                                pos.Artikel = artikel;
+                            }
+                        }
+                    }
+                }
+            }
+            return rechnungPositionen;
+        }
+
         #endregion
 
         #region order
@@ -660,18 +759,17 @@ namespace Restaurant.Database
             List<int> prices = new List<int>();
             int sum;
             string sql = @$"
-                SELECT
-	                A.Preis
-                FROM Rechnung R
+                SELECT 
+                    A.Preis
+                FROM Artikel A
                 JOIN Rechnungposition RP
-	                ON R.ID_Rechnung = RP.ID_Rechnung
-                JOIN Artikel A
-	                ON RP.ID_Artikel = A.ID_Artikel
+                    ON RP.ID_Artikel = A.ID_Artikel
                 JOIN Bestellung_Rechnung B2R
-	                ON R.ID_Rechnung = B2R.ID_Rechnung
+                    ON RP.ID_Rechnung = B2R.ID_Rechnung
                 JOIN Bestellung B
-	                ON B2R.ID_Rechnung = B.ID_Bestellung
-                WHERE CAST(Datum AS DATE) = CAST('{day.Day}' AS DATE)";
+                    ON B2R.ID_Bestellung = B.ID_Bestellung
+                WHERE 
+                    CAST(B.Datum AS DATE) = CAST('{day.ToString("dd.MM.yyyy")}' AS DATE)";
             using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
             {
                 using (SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection))
@@ -703,7 +801,7 @@ namespace Restaurant.Database
 	                ON R.ID_Rechnung = B2R.ID_Rechnung
                 JOIN Bestellung B
 	                ON B2R.ID_Rechnung = B.ID_Bestellung
-                WHERE CAST(Datum AS DATE) = CAST('{day.Day}' AS DATE)";
+                WHERE CAST(Datum AS DATE) = CAST('{day.ToString("dd.MM.yyyy")}' AS DATE)";
             using (SQLiteConnection sqliteconnection = new SQLiteConnection(dbConnection))
             {
                 using (SQLiteCommand sqlitecommand = new SQLiteCommand(sql, sqliteconnection))
@@ -725,3 +823,22 @@ namespace Restaurant.Database
         #endregion
     }
 }
+
+/*
+SELECT 
+    r.ID_Rechnung, 
+    rp.ID_Artikel, 
+    ar.Name, 
+    ar.Preis
+FROM Rechnung r
+JOIN Rechnungposition rp 
+    ON r.ID_Rechnung = rp.ID_Rechnung
+JOIN Artikel ar 
+    ON rp.ID_Artikel = ar.ID_Artikel
+JOIN Bestellung_Rechnung br 
+    ON r.ID_Rechnung = br.ID_Rechnung
+JOIN Bestellung bs 
+    ON bs.ID_Bestellung = br.ID_Bestellung
+WHERE bs.ID_Tisch = 8
+ORDER BY r.ID_Rechnung;
+*/
