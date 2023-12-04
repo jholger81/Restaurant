@@ -102,12 +102,13 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost("pay/{trinkgeld}", Name = "PayOrder")]
-        public HttpResponseMessage PostNewOrder([FromBody] List<Bestellposition> orderpositions, int trinkgeld)
+        public HttpResponseMessage PayOrder([FromBody] List<Bestellposition> orderpositions, int trinkgeld)
         {
             HttpResponseMessage result = new HttpResponseMessage();
             try
             {
-                DBAccess.PayBillPartially(orderpositions, trinkgeld);
+                var reconstructedPositions = DBAccess.ReconstructPositions(orderpositions);
+                DBAccess.PayBillPartially(reconstructedPositions, trinkgeld);
                 result.StatusCode = HttpStatusCode.OK;
             }
             catch

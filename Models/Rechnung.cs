@@ -15,5 +15,6 @@ namespace Restaurant.Models
     {
         public int ID_Bestellung { get; set; }
         int Trinkgeld { get; set; }
+        public List<Rechnungposition> Positionen { get; set; }
     }
 }

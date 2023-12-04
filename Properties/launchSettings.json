@@ -20,7 +20,7 @@
     "RestaurantOldFramework": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "orders/7",
+      "launchUrl": "invoice/fromTable/8",
       "applicationUrl": "https://localhost:1337;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
