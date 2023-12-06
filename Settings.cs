@@ -7,7 +7,6 @@ namespace Restaurant
     public class Settings
     {
         public int? Port { get; set; }
-        public string DBFile { get; set; }
 
         internal Settings Load()
         {
